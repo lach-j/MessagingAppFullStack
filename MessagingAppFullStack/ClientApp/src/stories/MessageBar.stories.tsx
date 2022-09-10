@@ -14,4 +14,7 @@ export default {
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof MessageBar> = (args) => <MessageBar {...args} />;
 
-export const Primary = Template.bind({});
+export const Default = Template.bind({});
+
+export const Disabled = Template.bind({});
+Disabled.args = {isDisabled: true}

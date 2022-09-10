@@ -4,9 +4,10 @@ import {BiPaperPlane} from "react-icons/all";
 
 interface MessageBarProps {
     onSend: (messageContent: string) => void;
+    isDisabled: boolean;
 }
 
-export const MessageBar = ({ onSend }: MessageBarProps) => {
+export const MessageBar = ({ onSend, isDisabled = false }: MessageBarProps) => {
     const [messageContent, setMessageContent] = React.useState<string>("");
 
     const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
@@ -40,8 +41,8 @@ export const MessageBar = ({ onSend }: MessageBarProps) => {
     
     return (
       <HStack alignItems={'end'}>
-          <Textarea ref={textareaRef} h={10} minH={10} maxH={32} resize={'none'} value={messageContent} onChange={handleInput} onKeyDown={handleInputKeyDown} />
-          <IconButton colorScheme={'blue'} icon={<BiPaperPlane />} aria-label={'Send message'} onClick={handleSendMessage} />
+          <Textarea disabled={isDisabled} ref={textareaRef} h={10} minH={10} maxH={32} resize={'none'} value={messageContent} onChange={handleInput} onKeyDown={handleInputKeyDown} />
+          <IconButton disabled={isDisabled} colorScheme={'blue'} icon={<BiPaperPlane />} aria-label={'Send message'} onClick={handleSendMessage} />
       </HStack>  
     );
 }
