@@ -7,8 +7,16 @@ interface MessageBarProps {
 }
 
 export const MessageBar = ({ onSend }: MessageBarProps) => {
-    
     const [messageContent, setMessageContent] = React.useState<string>("");
+
+    const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
+    React.useEffect(() => {
+        if (textareaRef && textareaRef.current) {
+            textareaRef.current.style.height = "0px";
+            const scrollHeight = textareaRef.current.scrollHeight;
+            textareaRef.current.style.height = scrollHeight + 2 + "px";
+        }
+    }, [messageContent]);
     
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessageContent(e.target.value);
@@ -31,8 +39,8 @@ export const MessageBar = ({ onSend }: MessageBarProps) => {
     }
     
     return (
-      <HStack>
-          <Textarea resize={'none'} value={messageContent} onChange={handleInput} onKeyDown={handleInputKeyDown} />
+      <HStack alignItems={'end'}>
+          <Textarea ref={textareaRef} h={10} minH={10} maxH={32} resize={'none'} value={messageContent} onChange={handleInput} onKeyDown={handleInputKeyDown} />
           <IconButton colorScheme={'blue'} icon={<BiPaperPlane />} aria-label={'Send message'} onClick={handleSendMessage} />
       </HStack>  
     );
