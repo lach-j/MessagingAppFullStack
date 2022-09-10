@@ -1,5 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { v4 as uuidv4 } from "uuid";
 
 import { MessageContainer } from "../components/MessageContainer";
 import { Message } from "../models/Message";
@@ -14,12 +15,12 @@ export const Default = () => {
   const user1 = {
     id: 0,
     name: "Lachlan Johnson",
-    avatar: "https://thispersondoesnotexist.com/image",
+    avatar: `https://i.pravatar.cc/150?u=${uuidv4()}`,
   };
   const user2 = {
     id: 1,
     name: "Bob Newman",
-    avatar: "https://source.unsplash.com/random/300×300",
+    avatar: `https://i.pravatar.cc/150?u=${uuidv4()}`,
   };
 
   const messages: Message[] = [
