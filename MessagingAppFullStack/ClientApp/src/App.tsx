@@ -13,7 +13,6 @@ import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from "./Logo"
 
 export const App = () => {
-  console.log("test")
   return(
   <ChakraProvider theme={theme}>
     <Box textAlign="center" fontSize="xl">
