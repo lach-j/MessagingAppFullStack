@@ -1,8 +1,9 @@
-﻿import { VStack } from "@chakra-ui/react";
+﻿import { Divider, VStack } from "@chakra-ui/react";
 import { MessageComponentProps } from "./MessageComponent";
 import { User } from "../models/User";
 import React from "react";
 import { groupBy } from "../util/groupBy";
+import moment from "moment";
 
 interface MessageContainerProps {
   children:
@@ -17,31 +18,45 @@ export const MessageContainer = ({
 }: MessageContainerProps) => {
   let elements = React.Children.toArray(children);
 
-  let groups = groupBy(elements, (a, b) =>
+  let dateGroups = groupBy(elements, (a, b) =>
     React.isValidElement<MessageComponentProps>(a) &&
     React.isValidElement<MessageComponentProps>(b)
-      ? a.props.user.id === b.props.user.id
+      ? moment(a.props.timestamp).isSame(moment(b.props.timestamp), "date")
       : false
   );
 
   return (
     <VStack alignItems={"stretch"}>
-      {groups.map((group) =>
-        React.Children.map(group, (child, index) => {
-          if (!React.isValidElement<MessageComponentProps>(child)) return;
-          const fromActiveUser = child.props.user.id === activeUser.id;
-          const isLastElement = index === group.length - 1;
-          return React.cloneElement(
-            child as React.ReactElement<MessageComponentProps>,
-            {
-              ...child.props,
-              avatarIsVisible: isLastElement,
-              avatarSide: fromActiveUser ? "right" : "left",
-              backgroundColor: fromActiveUser ? "red.100" : "blue.100",
-            }
-          );
-        })
-      )}
+      {dateGroups.map((group) => {
+        let userGroups = groupBy(group, (a, b) =>
+          React.isValidElement<MessageComponentProps>(a) &&
+          React.isValidElement<MessageComponentProps>(b)
+            ? a.props.user.id === b.props.user.id
+            : false
+        );
+
+        return (
+          <>
+            <Divider />
+            {userGroups.map((userGroup) =>
+              React.Children.map(userGroup, (child, index) => {
+                if (!React.isValidElement<MessageComponentProps>(child)) return;
+                const fromActiveUser = child.props.user.id === activeUser.id;
+                const isLastElement = index === userGroup.length - 1;
+                return React.cloneElement(
+                  child as React.ReactElement<MessageComponentProps>,
+                  {
+                    ...child.props,
+                    avatarIsVisible: isLastElement,
+                    avatarSide: fromActiveUser ? "right" : "left",
+                    backgroundColor: fromActiveUser ? "red.100" : "blue.100",
+                  }
+                );
+              })
+            )}
+          </>
+        );
+      })}
     </VStack>
   );
 };

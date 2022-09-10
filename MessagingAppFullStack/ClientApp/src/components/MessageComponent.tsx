@@ -7,6 +7,7 @@ export interface MessageComponentProps {
   avatarSide?: "left" | "right";
   backgroundColor?: string;
   avatarIsVisible?: boolean;
+  timestamp?: string;
 }
 
 export const MessageComponent = ({
@@ -15,6 +16,7 @@ export const MessageComponent = ({
   avatarSide = "left",
   backgroundColor = "red.100",
   avatarIsVisible = true,
+  timestamp,
 }: MessageComponentProps) => {
   return (
     <Flex

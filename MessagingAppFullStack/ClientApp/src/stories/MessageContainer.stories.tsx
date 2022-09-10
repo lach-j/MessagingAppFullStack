@@ -26,29 +26,34 @@ export const Default = () => {
     {
       user: user2,
       content: "This is the first message",
-      timestamp: "2018-06-13T12:11:55.000Z",
+      timestamp: "2018-06-10T12:11:55.000Z",
     },
     {
       user: user1,
       content: "This is the first message",
-      timestamp: "2018-06-13T12:12:55.000Z",
+      timestamp: "2018-06-10T12:12:55.000Z",
     },
     {
       user: user2,
       content: "This is the first message",
-      timestamp: "2018-06-13T13:11:55.000Z",
+      timestamp: "2018-06-10T13:11:55.000Z",
     },
     {
       user: user2,
       content: "This is the first message",
       timestamp: "2018-06-10T10:11:55.000Z",
     },
+    {
+      user: user2,
+      content: "This is the first message",
+      timestamp: "2018-06-11T10:12:55.000Z",
+    },
   ];
 
   return (
     <MessageContainer activeUser={user1}>
       {messages.map(({ user, content, timestamp }) => (
-        <MessageComponent user={user} content={content} />
+        <MessageComponent user={user} content={content} timestamp={timestamp} />
       ))}
     </MessageContainer>
   );
