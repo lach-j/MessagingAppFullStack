@@ -1,4 +1,4 @@
-﻿import { Avatar, Box, Flex, HStack, Stack } from "@chakra-ui/react";
+﻿import { Avatar, Box, Flex } from "@chakra-ui/react";
 import { User } from "../models/User";
 
 export interface MessageComponentProps {
@@ -6,6 +6,7 @@ export interface MessageComponentProps {
   content: string;
   avatarSide?: "left" | "right";
   backgroundColor?: string;
+  avatarIsVisible?: boolean;
 }
 
 export const MessageComponent = ({
@@ -13,6 +14,7 @@ export const MessageComponent = ({
   content,
   avatarSide = "left",
   backgroundColor = "red.100",
+  avatarIsVisible = true,
 }: MessageComponentProps) => {
   return (
     <Flex
@@ -20,7 +22,11 @@ export const MessageComponent = ({
       alignItems="end"
       gap={2}
     >
-      <Avatar name={user.name} src={user.avatar} size="sm" />
+      {avatarIsVisible ? (
+        <Avatar name={user.name} src={user.avatar} size="sm" />
+      ) : (
+        <Box w={8} />
+      )}
       <Box
         backgroundColor={backgroundColor}
         px={4}
