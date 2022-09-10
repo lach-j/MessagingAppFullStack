@@ -1,4 +1,4 @@
-﻿import { Divider, VStack } from "@chakra-ui/react";
+﻿import { Divider, HStack, Text, VStack } from "@chakra-ui/react";
 import { MessageComponentProps } from "./MessageComponent";
 import { User } from "../models/User";
 import React from "react";
@@ -37,7 +37,17 @@ export const MessageContainer = ({
 
         return (
           <>
-            <Divider />
+            <HStack>
+              <Divider />
+              <Text whiteSpace="nowrap">
+                {React.isValidElement<MessageComponentProps>(group[0])
+                  ? moment(group[0].props.timestamp)
+                      .local()
+                      .format("DD/MM/yyyy")
+                  : ""}
+              </Text>
+              <Divider />
+            </HStack>
             {userGroups.map((userGroup) =>
               React.Children.map(userGroup, (child, index) => {
                 if (!React.isValidElement<MessageComponentProps>(child)) return;
