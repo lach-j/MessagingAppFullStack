@@ -21,6 +21,6 @@ Default.args = {
     avatar: "https://source.unsplash.com/random/300×300",
   },
   avatarSide: "left",
-  content: "Hello my name is Lachlan",
-  backgroundColor: "blue.100",
+  content: `Hello my name is Lachlan`,
+  backgroundColor: "blue",
 };

@@ -60,7 +60,7 @@ export const MessageContainer = ({
                     ...child.props,
                     avatarIsVisible: isLastElement,
                     avatarSide: fromActiveUser ? "right" : "left",
-                    backgroundColor: fromActiveUser ? "red.100" : "blue.100",
+                    backgroundColor: fromActiveUser ? "red" : "blue",
                   }
                 );
               })
