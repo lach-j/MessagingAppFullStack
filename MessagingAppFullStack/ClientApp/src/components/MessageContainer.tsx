@@ -2,8 +2,9 @@
 import { MessageComponentProps } from "./MessageComponent";
 import { User } from "../models/User";
 import React from "react";
-import { groupBy } from "../util/groupBy";
 import moment from "moment";
+
+import "../util/arrayExtensions";
 
 interface MessageContainerProps {
   children:
@@ -18,7 +19,7 @@ export const MessageContainer = ({
 }: MessageContainerProps) => {
   let elements = React.Children.toArray(children);
 
-  let dateGroups = groupBy(elements, (a, b) =>
+  let dateGroups = elements.groupBy((a, b) =>
     React.isValidElement<MessageComponentProps>(a) &&
     React.isValidElement<MessageComponentProps>(b)
       ? moment(a.props.timestamp).isSame(moment(b.props.timestamp), "date")
@@ -28,7 +29,7 @@ export const MessageContainer = ({
   return (
     <VStack alignItems={"stretch"}>
       {dateGroups.map((group) => {
-        let userGroups = groupBy(group, (a, b) =>
+        let userGroups = group.groupBy((a, b) =>
           React.isValidElement<MessageComponentProps>(a) &&
           React.isValidElement<MessageComponentProps>(b)
             ? a.props.user.id === b.props.user.id
