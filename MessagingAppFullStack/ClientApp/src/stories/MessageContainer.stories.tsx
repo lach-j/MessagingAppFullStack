@@ -37,12 +37,17 @@ export const Default = () => {
     {
       user: user2,
       content: "This is the first message",
-      timestamp: "2018-06-10T13:11:55.000Z",
+      timestamp: "2018-06-10T12:15:55.000Z",
     },
     {
       user: user2,
       content: "This is the first message",
-      timestamp: "2018-06-10T10:11:55.000Z",
+      timestamp: "2018-06-10T12:40:55.000Z",
+    },
+    {
+      user: user2,
+      content: "This is the first message",
+      timestamp: "2018-06-10T13:41:55.000Z",
     },
     {
       user: user2,

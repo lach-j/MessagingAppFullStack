@@ -1,4 +1,4 @@
-﻿import { Divider, HStack, Text, VStack } from "@chakra-ui/react";
+﻿import { Box, Divider, HStack, Text, VStack } from "@chakra-ui/react";
 import { MessageComponentProps } from "./MessageComponent";
 import { User } from "../models/User";
 import React from "react";
@@ -29,13 +29,14 @@ export const MessageContainer = ({
   return (
     <VStack alignItems={"stretch"}>
       {dateGroups.map((group) => {
-        let userGroups = group.groupBy((a, b) =>
+        let timeGroups = group.groupBy((a, b) =>
           React.isValidElement<MessageComponentProps>(a) &&
           React.isValidElement<MessageComponentProps>(b)
-            ? a.props.user.id === b.props.user.id
+            ? moment
+                .utc(b.props.timestamp)
+                .isAfter(moment.utc(a.props.timestamp).subtract(1, "hours"))
             : false
         );
-
         return (
           <>
             <HStack>
@@ -49,25 +50,45 @@ export const MessageContainer = ({
               </Text>
               <Divider />
             </HStack>
-            {userGroups.map((userGroup) =>
-              React.Children.map(userGroup, (child, index) => {
-                if (!React.isValidElement<MessageComponentProps>(child)) return;
-                const fromActiveUser = child.props.user.id === activeUser.id;
-                const isLastElement = index === userGroup.length - 1;
-                return React.cloneElement(
-                  child as React.ReactElement<MessageComponentProps>,
-                  {
-                    ...child.props,
-                    avatarIsVisible: isLastElement,
-                    avatarSide: fromActiveUser ? "right" : "left",
-                    backgroundColor: fromActiveUser ? "red" : "blue",
-                  }
-                );
-              })
-            )}
+            {timeGroups.map((timeGroup) => {
+              let userGroups = timeGroup.groupBy((a, b) =>
+                React.isValidElement<MessageComponentProps>(a) &&
+                React.isValidElement<MessageComponentProps>(b)
+                  ? a.props.user.id === b.props.user.id
+                  : false
+              );
+
+              return (
+                <>
+                  {userGroups.map((userGroup, userGroupIndex) => {
+                    return React.Children.map(userGroup, (child, index) => {
+                      if (!React.isValidElement<MessageComponentProps>(child))
+                        return;
+                      const fromActiveUser =
+                        child.props.user.id === activeUser.id;
+                      const isLastElement = index === userGroup.length - 1;
+                      return React.cloneElement(
+                        child as React.ReactElement<MessageComponentProps>,
+                        {
+                          ...child.props,
+                          avatarIsVisible: isLastElement,
+                          timestampIsVisible:
+                            isLastElement &&
+                            userGroups.length - 1 === userGroupIndex,
+                          avatarSide: fromActiveUser ? "right" : "left",
+                          backgroundColor: fromActiveUser ? "red" : "blue",
+                        }
+                      );
+                    });
+                  })}
+                  <Box h={10} />
+                </>
+              );
+            })}
           </>
         );
       })}
+      )
     </VStack>
   );
 };

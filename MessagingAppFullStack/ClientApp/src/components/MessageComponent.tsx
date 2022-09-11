@@ -37,7 +37,15 @@ export const MessageComponent = ({
   timestamp,
   timestampIsVisible = true,
 }: MessageComponentProps) => {
-  const timeFromNow = moment(timestamp).fromNow();
+  const timeDifference = moment(moment.now()).diff(
+    moment.utc(timestamp).local(),
+    "minute"
+  );
+
+  const timeFromNow =
+    timeDifference < 90
+      ? moment.utc(timestamp).local().fromNow()
+      : moment.utc(timestamp).local().format("hh:MM a");
 
   const bgColor = useColorModeValue(
     `${backgroundColor}.100`,
