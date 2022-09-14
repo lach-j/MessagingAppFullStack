@@ -61,7 +61,11 @@ export const MessageComponent = ({
           gap={2}
         >
           {avatarIsVisible ? (
-            <Avatar name={user.name} src={user.avatar} size="sm" />
+            <Avatar
+              name={`${user.firstName} ${user.lastName}`}
+              src={user.avatar}
+              size="sm"
+            />
           ) : (
             <Box w={8} />
           )}

@@ -1,5 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { v4 as uuidv4 } from "uuid";
 
 import { MessageComponent } from "../components/MessageComponent";
 
@@ -17,8 +18,9 @@ export const Default = Template.bind({});
 Default.args = {
   user: {
     id: 0,
-    name: "Lachlan Johnson",
-    avatar: "https://source.unsplash.com/random/300×300",
+    firstName: "Lachlan",
+    lastName: "Johnson",
+    avatar: `https://i.pravatar.cc/150?u=${uuidv4()}`,
   },
   avatarSide: "left",
   content: `Hello my name is Lachlan`,

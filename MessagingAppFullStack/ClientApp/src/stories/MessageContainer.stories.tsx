@@ -13,12 +13,14 @@ export default {
 
 const user1 = {
   id: 0,
-  name: "Lachlan Johnson",
+  firstName: "Lachlan",
+  lastName: " Johnson",
   avatar: `https://i.pravatar.cc/150?u=${uuidv4()}`,
 };
 const user2 = {
   id: 1,
-  name: "Bob Newman",
+  firstName: "Bob",
+  lastName: "Newman",
   avatar: `https://i.pravatar.cc/150?u=${uuidv4()}`,
 };
 
