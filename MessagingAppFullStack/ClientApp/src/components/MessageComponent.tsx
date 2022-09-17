@@ -26,6 +26,7 @@ export interface MessageComponentProps {
   avatarIsVisible?: boolean;
   timestampIsVisible?: boolean;
   timestamp?: string;
+  avatarIsRendered?: boolean;
 }
 
 export const MessageComponent = ({
@@ -36,6 +37,7 @@ export const MessageComponent = ({
   avatarIsVisible = true,
   timestamp,
   timestampIsVisible = true,
+  avatarIsRendered = true,
 }: MessageComponentProps) => {
   const timeDifference = moment(moment.now()).diff(
     moment.utc(timestamp).local(),
@@ -60,15 +62,16 @@ export const MessageComponent = ({
           alignItems="end"
           gap={2}
         >
-          {avatarIsVisible ? (
-            <Avatar
-              name={`${user.firstName} ${user.lastName}`}
-              src={user.avatar}
-              size="sm"
-            />
-          ) : (
-            <Box w={8} />
-          )}
+          {avatarIsRendered &&
+            (avatarIsVisible ? (
+              <Avatar
+                name={`${user.firstName} ${user.lastName}`}
+                src={user.avatar}
+                size="sm"
+              />
+            ) : (
+              <Box w={8} />
+            ))}
           <Popover
             placement={avatarSide === "left" ? "right" : "left"}
             trigger="hover"
