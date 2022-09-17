@@ -84,6 +84,7 @@ export const MessageComponent = ({
                 rounded={"xl"}
                 verticalAlign="middle"
                 lineHeight="1.8rem"
+                whiteSpace={"break-spaces"}
               >
                 {content}
               </Box>
