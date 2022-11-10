@@ -49,6 +49,8 @@ public class UserService : IUserService
         await using var db = new EfCoreContext();
 
         var users = await db.Users
+            .Include(u => u.Roles)
+            .ThenInclude(r => r.Permissions)
             .ToListAsync();
 
         return users;

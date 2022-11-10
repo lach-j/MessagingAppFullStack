@@ -1,22 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
+using MessagingAppFullStack.Security;
 
 namespace MessagingAppFullStack.Domain.Models;
 
-[Index(nameof(Username), IsUnique = true)]
-public class User
+[Table(nameof(Permission))]
+public class Permission
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
+    [Required]
+    public PermissionType Name { get; set; }
 
-    public string Username { get; set; }
+    public string Description { get; set; }
 
     [JsonIgnore]
-    public string Password { get; set; }
-
-    public virtual ICollection<Role> Roles { get; set; }
+    public ICollection<Role> Roles { get; set; }
 }
