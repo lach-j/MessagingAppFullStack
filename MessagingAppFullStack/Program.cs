@@ -1,10 +1,35 @@
+using System.Text;
+using MessagingAppFullStack.Configuration;
+using MessagingAppFullStack.Security;
+using MessagingAppFullStack.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Jwt:Key"])),
+            ValidIssuer = builder.Configuration["AppSettings:Jwt:Issuer"],
+            ValidAudience = builder.Configuration["AppSettings:Jwt:Audience"],
+            ValidateAudience = true,
+            ValidateIssuer = true,
+        };
+    });
+
 builder.Services.AddControllers();
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -22,7 +47,9 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseAuthentication();
 app.UseRouting();
+app.UseAuthorization();
 
 
 app.MapControllerRoute(
