@@ -14,5 +14,12 @@ namespace MessagingAppFullStack.Domain.Context
             optionsBuilder.UseSqlServer(
                 @"Server=.\;Database=MessagingAppFullStack;Trusted_Connection=True;MultipleActiveResultSets=true");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasIndex(p => new {p.Username})
+                .IsUnique();
+        }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessagingAppFullStack.Domain.Models;
 
+[Index(nameof(Username), IsUnique = true)]
 public class User
 {
     [Key]
