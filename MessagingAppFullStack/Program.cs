@@ -30,6 +30,8 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IPermissionService, PermissionService>();
+
 
 var app = builder.Build();
 

@@ -13,10 +13,12 @@ namespace MessagingAppFullStack.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IPermissionService _permissionService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IPermissionService permissionService)
     {
         _userService = userService;
+        _permissionService = permissionService;
     }
 
     [HttpPost]
@@ -56,5 +58,18 @@ public class UserController : ControllerBase
     public async Task<ActionResult> GetUserById([FromRoute] long userId)
     {
         return Ok(await _userService.GetUserByIdAsync(userId));
+    }
+        
+    [HttpGet]
+    [Route("{userId:long}/permission")]
+    public async Task<ActionResult> HasPermission([FromRoute] long userId, [FromQuery] string permission)
+    {
+        
+        if (!Enum.TryParse<PermissionType>(permission, out var permissionType))
+            return Ok(new { HasPermission = false });
+        
+        var hasPermission = await _permissionService.UserHasPermissionAsync(userId, permissionType);
+
+        return Ok(new { HasPermission = hasPermission });
     }
 }
