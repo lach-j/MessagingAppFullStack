@@ -1,0 +1,19 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+
+namespace MessagingAppFullStack.Domain.Models;
+
+public class User
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
+
+
+    public string Username { get; set; }
+
+    [JsonIgnore]
+    public string Password { get; set; }
+}
