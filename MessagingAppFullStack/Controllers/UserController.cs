@@ -25,15 +25,6 @@ public class UserController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<User>> CreateUser(NewUserRequest userRequest)
     {
-        if (userRequest.ConfirmPassword != userRequest.Password)
-            return BadRequest(new
-            {
-                Errors = new Dictionary<string, string[]>()
-                {
-                    {nameof(NewUserRequest.ConfirmPassword), new[] {"Passwords must match."}}
-                }
-            });
-
         var user = new User
         {
             Username = userRequest.Email,

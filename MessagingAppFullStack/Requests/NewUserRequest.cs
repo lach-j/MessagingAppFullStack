@@ -12,6 +12,7 @@ public class NewUserRequest
     [MinLength(8)]
     public string Password { get; set; }
 
+    [Compare(nameof(Password))]
     [Required]
     public string ConfirmPassword { get; set; }
 }
