@@ -10,6 +10,10 @@ public class NewUserRequest
 
     [Required]
     [MinLength(8)]
+    [RegularExpression(
+        @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*`~])(?=.*\d).+$",
+        ErrorMessage =
+            "Password must contain at least one lowercase character, one uppercase character, one digit, and one special character !@#$%^&*`~")]
     public string Password { get; set; }
 
     [Compare(nameof(Password))]
