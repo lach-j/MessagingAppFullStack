@@ -10,7 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-interface GroupSummaryProps {
+export interface GroupSummaryProps {
   users: User[];
   displayMessage: Message;
   title: string;
