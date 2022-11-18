@@ -11,11 +11,13 @@ interface MessageContainerProps {
     | React.ReactElement<MessageComponentProps>
     | React.ReactElement<MessageComponentProps>[];
   activeUser: User;
+  showOwnAvatar?: boolean;
 }
 
 export const MessageContainer = ({
   children,
   activeUser,
+  showOwnAvatar = false,
 }: MessageContainerProps) => {
   let elements = React.Children.toArray(children);
 
@@ -72,6 +74,7 @@ export const MessageContainer = ({
                         {
                           ...child.props,
                           avatarIsVisible: isLastElement,
+                          avatarIsRendered: !fromActiveUser || showOwnAvatar,
                           timestampIsVisible:
                             isLastElement &&
                             userGroups.length - 1 === userGroupIndex,
