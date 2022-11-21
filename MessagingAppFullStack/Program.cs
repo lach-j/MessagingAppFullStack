@@ -1,7 +1,6 @@
 using System.Text;
 using MessagingAppFullStack.Configuration;
 using MessagingAppFullStack.Resolvers;
-using MessagingAppFullStack.Security;
 using MessagingAppFullStack.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +52,15 @@ else
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// TODO: restrict to domain
+app.UseCors(
+    x =>
+    {
+        x.AllowAnyOrigin();
+        x.AllowAnyMethod();
+        x.AllowAnyHeader();
+    });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
