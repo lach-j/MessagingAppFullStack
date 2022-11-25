@@ -1,33 +1,24 @@
 using MessagingAppFullStack.Domain.Models;
-using MessagingAppFullStack.Security;
+using MessagingAppFullStack.Services;
 
 namespace MessagingAppFullStack.Resolvers;
 
 public class UserQuery
 {
-    public User GetUser()
+    private readonly IUserService _userService;
+
+    public UserQuery(IUserService userService)
     {
-        return new User()
-        {
-            Id = 1L,
-            Username = "Test",
-            Roles = new List<Role>()
-            {
-                new Role()
-                {
-                    Id = 0L,
-                    Name = "StandardUser",
-                    Permissions = new List<Permission>()
-                    {
-                        new Permission()
-                        {
-                            Id = 0L,
-                            Name = PermissionType.EditOwn
-                        }
-                    }
-                }
-            },
-            Password = "testpass"
-        };
+        _userService = userService;
+    }
+
+    public async Task<User?> GetUser(long id)
+    {
+        return await _userService.GetUserByIdAsync(id);
+    }
+
+    public async Task<ICollection<User>> GetUsers()
+    {
+        return await _userService.GetAllUsersAsync();
     }
 }

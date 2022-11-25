@@ -15,6 +15,7 @@ public class User
 
     public string Username { get; set; }
 
+    [GraphQLIgnore]
     [JsonIgnore]
     public string Password { get; set; }
 
