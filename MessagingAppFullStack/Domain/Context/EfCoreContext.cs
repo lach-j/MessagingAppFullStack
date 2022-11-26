@@ -9,6 +9,8 @@ namespace MessagingAppFullStack.Domain.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<MessageGroup> MessageGroups { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
