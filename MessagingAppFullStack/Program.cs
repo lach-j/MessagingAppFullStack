@@ -32,14 +32,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IPermissionService, PermissionService>();
 
-builder.Services
-    .AddGraphQLServer()
-    .AddQueryType<UserQuery>();
-
 
 var app = builder.Build();
-
-app.MapGraphQL();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
