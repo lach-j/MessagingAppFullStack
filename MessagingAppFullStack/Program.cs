@@ -7,26 +7,58 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(x =>
-    {
-        x.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(
+        x =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Jwt:Key"])),
-            ValidIssuer = builder.Configuration["AppSettings:Jwt:Issuer"],
-            ValidAudience = builder.Configuration["AppSettings:Jwt:Audience"],
-            ValidateAudience = true,
-            ValidateIssuer = true,
-        };
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+    .AddJwtBearer(
+        x =>
+        {
+            x.Events = new JwtBearerEvents()
+            {
+                OnMessageReceived = context =>
+                {
+                    if (context.Request.Cookies.ContainsKey("X-Access-Token"))
+                    {
+                        context.Token = context.Request.Cookies["X-Access-Token"];
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Jwt:Key"])),
+                ValidIssuer = builder.Configuration["AppSettings:Jwt:Issuer"],
+                ValidAudience = builder.Configuration["AppSettings:Jwt:Audience"],
+                ValidateAudience = true,
+                ValidateIssuer = true,
+            };
+        });
+
+
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy(
+            name: "signalR", policyBuilder =>
+            {
+                policyBuilder.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
     });
+builder.Services.AddSignalR();
+
 
 builder.Services.AddControllers();
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserService, UserService>();
