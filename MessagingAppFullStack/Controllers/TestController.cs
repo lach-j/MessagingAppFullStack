@@ -1,5 +1,4 @@
 ﻿using MessagingAppFullStack.Security;
-using MessagingAppFullStack.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
