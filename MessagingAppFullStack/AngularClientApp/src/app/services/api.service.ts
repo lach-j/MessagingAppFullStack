@@ -15,7 +15,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 })
 export class ApiService {
   // TODO: dynamically infer the url or use SPA proxy
-  private readonly baseUrl = 'https://localhost:7131';
+  private readonly baseUrl = '/api';
 
   constructor(private httpClient: HttpClient) {}
 

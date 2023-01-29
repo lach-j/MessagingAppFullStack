@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace MessagingAppFullStack.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AuthenticationController : ControllerBase
 {
     private readonly IUserService _userService;
