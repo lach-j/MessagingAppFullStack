@@ -1,4 +1,5 @@
 ﻿using MessagingAppFullStack.Domain.Models;
+using MessagingAppFullStack.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessagingAppFullStack.Controllers;
@@ -7,35 +8,27 @@ namespace MessagingAppFullStack.Controllers;
 [Route("api/[controller]")]
 public class MessagingController : ControllerBase
 {
-    [HttpGet]
-    public IEnumerable<Message> Get()
+
+    private readonly IMessagingService _messagingService;
+
+    public MessagingController(IMessagingService messagingService)
     {
-        return new List<Message>()
-        {
-            new Message()
-            {
-                Content = "test123",
-                Id = 1L,
-                Timestamp = DateTime.UtcNow
-            },
-            new Message()
-            {
-                Content = "oppopop",
-                Id = 2L,
-                Timestamp = DateTime.UtcNow + TimeSpan.FromMinutes(5)
-            }
-        };
+        _messagingService = messagingService;
+    }
+
+    [HttpGet]
+    [Route("{groupId}")]
+    public async Task<IEnumerable<Message>> Get([FromRoute] long groupId)
+    {
+        Console.WriteLine(groupId);
+        return await _messagingService.GetMessagesInGroup(groupId);
     }
 
     [HttpPost]
-    public Message Post([FromBody] MessageReq content)
+    [Route("{groupId}")]
+    public async Task<Message> Post([FromBody] MessageReq content, [FromRoute] long groupId)
     {
-        return new Message()
-        {
-            Content = content.Content,
-            Id = 3L,
-            Timestamp = DateTime.UtcNow
-        };
+        return await _messagingService.CreateMessage(groupId, content.Content);
     }
     
     public struct MessageReq

@@ -19,4 +19,5 @@ public class User
     public string Password { get; set; }
 
     public virtual ICollection<Role> Roles { get; set; }
+    public ICollection<MessageGroup> MessageGroups { get; set; }
 }

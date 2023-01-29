@@ -6,31 +6,52 @@ import { BehaviorSubject, first, map, of } from 'rxjs';
   providedIn: 'root',
 })
 export class MessagingService {
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService) {}
+
+  public readonly messageGroups: {
+    [groupId: number]: BehaviorSubject<Message[]>;
+  } = {};
+
+  public messages$(groupId: number) {
+    this.loadInitialMessages(groupId);
+    return this.getOrCreateMessages(groupId);
+  }
+
+  private getOrCreateMessages(groupId: number) {
+    if (!this.messageGroups?.[groupId])
+      this.messageGroups[groupId] = new BehaviorSubject<Message[]>([]);
+
+    return this.messageGroups[groupId];
+  }
+
+  private loadInitialMessages(groupId: number) {
     this.apiService
-      .get<Message[]>('/api/messaging')
+      .get<Message[]>(`/messaging/${groupId}`)
       .pipe(
         first((messages) => !!messages.data),
         map((x) => x.data as Message[])
       )
-      .subscribe((messages) => this.messages$.next(messages));
+      .subscribe((messages) =>
+        this.getOrCreateMessages(groupId).next(messages)
+      );
   }
 
-  public readonly messages$: BehaviorSubject<Message[]> = new BehaviorSubject<
-    Message[]
-  >([]);
-
-  public createMessage(message: Message) {
+  public createMessage(messageGroupId: number, message: Message) {
     this.apiService
-      .post<Message>('/api/Messaging', of(message))
+      .post<Message>(`/messaging/${messageGroupId}`, of(message))
       .pipe(
         first((res) => !!res.data),
         map((res) => res.data as Message)
       )
       .subscribe((newMessage) => {
-        this.messages$.pipe(first()).subscribe((messages) => {
-          this.messages$.next([...messages, newMessage]);
-        });
+        this.getOrCreateMessages(messageGroupId)
+          .pipe(first())
+          .subscribe((messages) => {
+            this.getOrCreateMessages(messageGroupId).next([
+              ...messages,
+              newMessage,
+            ]);
+          });
       });
   }
 }

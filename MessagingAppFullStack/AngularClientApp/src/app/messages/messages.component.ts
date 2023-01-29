@@ -17,11 +17,11 @@ import { MessagingService } from '../services/messaging.service';
 export class MessagesComponent implements OnInit {
   constructor(public messageService: MessagingService) {}
 
-  public messages$ = this.messageService.messages$;
+  public messages$ = this.messageService.messages$(1);
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.messageService.createMessage({ content: 'test' });
+      this.messageService.createMessage(1, { content: 'test' });
     }, 2000);
   }
 }

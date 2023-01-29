@@ -1,7 +1,7 @@
 using System.Text;
 using MessagingAppFullStack.Configuration;
-using MessagingAppFullStack.Resolvers;
 using MessagingAppFullStack.Services;
+using MessagingAppFullStack.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -62,10 +62,12 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddSingleton<IPermissionService, PermissionService>();
 
 
 var app = builder.Build();
+app.UseCors("signalR");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -99,7 +101,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 app.MapControllers();
-
+app.MapHub<MessagesHub>("/messages");
 app.MapFallbackToFile("index.html");
 
 
