@@ -1,35 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, tap } from 'rxjs';
 import { ApiService, Response } from '../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
-  template: ` <div>
+  template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
     <label for="username-input">Username:</label>
-    <input type="text" [(ngModel)]="username" id="username-input" />
+    <input name="username" type="text" ngModel id="username-input" />
     <label for="password-input">Password:</label>
-    <input type="password" [(ngModel)]="password" id="password-input" />
-    <button (click)="onSubmit()">Login</button>
+    <input name="password" type="password" ngModel id="password-input" />
+    <button type="submit" pButton [loading]="(loading$ | async) ?? false">
+      Login
+    </button>
     <div *ngIf="response$ | async as response">
       <!-- TODO: Remove these and replace with humanised error messages-->
       <p>Loading: {{ response.loading }}</p>
-      <p>Token: {{ response.data?.token }}</p>
-      <p>Error: {{ response.error?.error | json }}</p>
+      <p>Error: {{ response.error?.error?.message }}</p>
     </div>
-  </div>`,
+  </form>`,
   styleUrls: ['./login-page.component.scss'],
 })
 export class LoginPageComponent implements OnInit {
-  public username: string = '';
-  public password: string = '';
-
   public requestBody = new BehaviorSubject<{
     username?: string;
     password?: string;
   }>({});
 
   public response$?: Observable<Response<{ token: string }>>;
+  public loading$ = this.response$?.pipe(map((res) => res.loading));
 
   constructor(
     private apiService: ApiService,
@@ -54,10 +54,12 @@ export class LoginPageComponent implements OnInit {
       );
   }
 
-  public onSubmit() {
+  public onSubmit(f: NgForm) {
+    const { username, password } = f.value;
+
     this.requestBody.next({
-      username: this.username,
-      password: this.password,
+      username,
+      password,
     });
   }
 }

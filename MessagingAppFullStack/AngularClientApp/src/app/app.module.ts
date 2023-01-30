@@ -8,10 +8,17 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DatePipe } from './pipes/date.pipe';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [AppComponent, LoginPageComponent, MessagesComponent, DatePipe],
-  imports: [FormsModule, BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ButtonModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
