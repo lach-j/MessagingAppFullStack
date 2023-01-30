@@ -9,6 +9,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class ApiService {
   // TODO: dynamically infer the url or use SPA proxy
   private readonly baseUrl = '/api';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private router: Router) {}
 
   public post<T>(
     endpoint: string,
@@ -27,7 +28,7 @@ export class ApiService {
       switchMap((body) =>
         this.httpClient
           .post<T>(`${this.baseUrl}${endpoint}`, body)
-          .pipe(apiTransform())
+          .pipe(this.apiTransform())
       )
     );
   }
@@ -35,17 +36,22 @@ export class ApiService {
   public get<T>(endpoint: string): Observable<Response<T>> {
     return this.httpClient
       .get<T>(`${this.baseUrl}${endpoint}`)
-      .pipe(apiTransform());
+      .pipe(this.apiTransform());
   }
-}
 
-const apiTransform = <T>() => {
-  return pipe(
-    map((data: T) => ({ data, loading: false })),
-    catchError((error) => of({ error, loading: false })),
-    startWith({ loading: true })
-  );
-};
+  private apiTransform = <T>() => {
+    return pipe(
+      map((data: T) => ({ data, loading: false })),
+      catchError((error) => {
+        this.router.navigate(['/login'], {
+          queryParams: { redirect: this.router.url },
+        });
+        return of({ error, loading: false });
+      }),
+      startWith({ loading: true })
+    );
+  };
+}
 
 export interface Response<T> {
   data?: T;
