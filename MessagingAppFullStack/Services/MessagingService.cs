@@ -1,6 +1,7 @@
 ﻿using MessagingAppFullStack.Domain.Context;
 using MessagingAppFullStack.Domain.Models;
 using MessagingAppFullStack.Exceptions;
+using MessagingAppFullStack.Middleware;
 using MessagingAppFullStack.SignalR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ public class MessagingService : IMessagingService
 {
     private readonly EfCoreContext _db = new();
     private readonly IHubContext<MessagesHub, IMessagesHub> _hub;
+    private readonly IUserProvider _userProvider;
 
-    public MessagingService(IHubContext<MessagesHub, IMessagesHub> hub)
+    public MessagingService(IHubContext<MessagesHub, IMessagesHub> hub, IUserProvider userProvider)
     {
         _hub = hub;
+        _userProvider = userProvider;
     }
 
     public async Task<IEnumerable<Message>> GetMessagesInGroup(long messageGroupId)
@@ -31,7 +34,13 @@ public class MessagingService : IMessagingService
     public async Task<Message> CreateMessage(long messageGroupId, string content)
     {
         var messageGroup = _db.MessageGroups.FirstOrDefault(mg => mg.Id == messageGroupId);
-        var user = _db.Users.FirstOrDefault(usr => usr.Id == 15L);
+
+        var userId = _userProvider.GetUserId();
+
+        if (userId is null)
+            throw new UnauthorizedAccessException($"{nameof(userId)} could not be provided by {nameof(UserProvider)}");
+
+        var user = _db.Users.FirstOrDefault(usr => usr.Id == userId);
         if (messageGroup == null)
             throw new EntityNotFoundException<Message>(messageGroupId);
 
@@ -47,8 +56,10 @@ public class MessagingService : IMessagingService
         };
 
         _db.Messages.Add(message);
-
+        
         await _db.SaveChangesAsync();
+        await _hub.Clients.All.NewMessage(messageGroupId, message);
+
         return message;
     }
 }

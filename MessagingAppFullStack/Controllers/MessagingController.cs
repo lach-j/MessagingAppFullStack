@@ -1,5 +1,6 @@
 ﻿using MessagingAppFullStack.Domain.Models;
 using MessagingAppFullStack.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessagingAppFullStack.Controllers;
@@ -26,6 +27,7 @@ public class MessagingController : ControllerBase
 
     [HttpPost]
     [Route("{groupId}")]
+    [Authorize]
     public async Task<Message> Post([FromBody] MessageReq content, [FromRoute] long groupId)
     {
         return await _messagingService.CreateMessage(groupId, content.Content);

@@ -1,5 +1,6 @@
 using System.Text;
 using MessagingAppFullStack.Configuration;
+using MessagingAppFullStack.Middleware;
 using MessagingAppFullStack.Services;
 using MessagingAppFullStack.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,10 +62,12 @@ builder.Services.AddControllers();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddSingleton<IPermissionService, PermissionService>();
-
+builder.Services.AddScoped<IUserProvider, UserProvider>();
 
 var app = builder.Build();
 app.UseCors("signalR");
