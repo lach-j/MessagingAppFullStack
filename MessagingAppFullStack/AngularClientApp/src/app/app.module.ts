@@ -8,16 +8,41 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DatePipe } from './pipes/date.pipe';
-import { ButtonModule } from 'primeng/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  NbThemeModule,
+  NbLayoutModule,
+  NbInputModule,
+  NbIconModule,
+  NbFormFieldModule,
+  NbButtonModule,
+  NbSpinnerModule,
+} from '@nebular/theme';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { PasswordFieldComponent } from './components/password-field.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginPageComponent, MessagesComponent, DatePipe],
+  declarations: [
+    AppComponent,
+    LoginPageComponent,
+    MessagesComponent,
+    DatePipe,
+    PasswordFieldComponent,
+  ],
   imports: [
     FormsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ButtonModule,
+    BrowserAnimationsModule,
+    NbThemeModule.forRoot({ name: 'default' }),
+    NbLayoutModule,
+    NbEvaIconsModule,
+    NbInputModule,
+    NbIconModule,
+    NbFormFieldModule,
+    NbButtonModule,
+    NbSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

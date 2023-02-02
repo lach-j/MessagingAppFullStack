@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, filter, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
 import { ApiService, Response } from '../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
-  template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
-    <label for="username-input">Username:</label>
-    <input name="username" type="text" ngModel id="username-input" />
-    <label for="password-input">Password:</label>
-    <input name="password" type="password" ngModel id="password-input" />
-    <button type="submit" pButton [loading]="(loading$ | async) ?? false">
-      Login
-    </button>
-    <div *ngIf="response$ | async as response">
-      <!-- TODO: Remove these and replace with humanised error messages-->
-      <p>Loading: {{ response.loading }}</p>
-      <p>Error: {{ response.error?.error?.message }}</p>
+  template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <input fullWidth type="text" nbInput ngModel name="username" />
+    <password-field name="password" ngModel></password-field>
+    <div *ngIf="{ response: response$ | async } as obs">
+      <button
+        [nbSpinner]="obs.response?.loading ?? false"
+        nbButton
+        type="submit"
+        [disabled]="!f.dirty"
+      >
+        Login
+      </button>
+      <p>Error: {{ obs.response?.error?.error?.message }}</p>
     </div>
   </form>`,
   styleUrls: ['./login-page.component.scss'],
@@ -29,7 +30,6 @@ export class LoginPageComponent implements OnInit {
   }>({});
 
   public response$?: Observable<Response<{ token: string }>>;
-  public loading$ = this.response$?.pipe(map((res) => res.loading));
 
   constructor(
     private apiService: ApiService,
