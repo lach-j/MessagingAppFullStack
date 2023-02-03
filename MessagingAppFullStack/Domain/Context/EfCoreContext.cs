@@ -1,6 +1,8 @@
-﻿using MessagingAppFullStack.Domain.Models;
+﻿using MessagingAppFullStack.Configuration;
+using MessagingAppFullStack.Domain.Models;
 using MessagingAppFullStack.Security;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MessagingAppFullStack.Domain.Context
 {
@@ -11,16 +13,46 @@ namespace MessagingAppFullStack.Domain.Context
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<MessageGroup> MessageGroups { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        
+        public EfCoreContext(DbContextOptions<EfCoreContext> options): base(options)
         {
-            // TODO: pull this from config
-            optionsBuilder.UseSqlServer(
-                @"Server=.\;Database=MessagingAppFullStack;Trusted_Connection=True;MultipleActiveResultSets=true");
+        }
+
+        private static void ApplyDateTimeUtcConverters(ModelBuilder modelBuilder)
+        {
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+                v => v.HasValue ? v.Value.ToUniversalTime() : v,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (entityType.IsKeyless)
+                {
+                    continue;
+                }
+
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(dateTimeConverter);
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(nullableDateTimeConverter);
+                    }
+                }
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ApplyDateTimeUtcConverters(modelBuilder);
+            
             modelBuilder
                 .Entity<Permission>()
                 .Property(e => e.Name)
