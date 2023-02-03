@@ -43,7 +43,7 @@ export class ApiService {
     return pipe(
       map((data: T) => ({ data, loading: false })),
       catchError((error) => {
-        if (!this.router.url.startsWith('/login'))
+        if (error.status === 401 && !this.router.url.startsWith('/login'))
           this.router.navigate(['/login'], {
             queryParams: { redirect: this.router.url },
           });
