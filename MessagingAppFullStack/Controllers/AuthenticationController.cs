@@ -48,7 +48,8 @@ public class AuthenticationController : ControllerBase
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
             new Claim(
                 "permissions", JsonSerializer.Serialize(permissions.Select(p => p.Name)),
-                typeof(ICollection<Permission>).ToString())
+                typeof(ICollection<Permission>).ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Username)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Jwt.Key));

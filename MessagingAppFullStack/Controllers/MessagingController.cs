@@ -30,7 +30,6 @@ public class MessagingController : ControllerBase
     [Route("{groupId}")]
     public async Task<IEnumerable<Message>> GetGroupMessage([FromRoute] long groupId)
     {
-        Console.WriteLine(groupId);
         return await _messagingService.GetMessagesInGroup(groupId);
     }
 

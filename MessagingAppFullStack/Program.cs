@@ -1,8 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.RegularExpressions;
 using MessagingAppFullStack.Configuration;
 using MessagingAppFullStack.Domain.Context;
 using MessagingAppFullStack.Exceptions;
+using MessagingAppFullStack.Extensions;
 using MessagingAppFullStack.Middleware;
 using MessagingAppFullStack.Services;
 using MessagingAppFullStack.SignalR;
@@ -78,6 +80,7 @@ builder.Services.AddHttpContextAccessor();
 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? settings.Database.ConnectionString;
 builder.Services.AddDbContext<EfCoreContext>(options => options.UseSqlServer(connection));
 
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
@@ -115,6 +118,7 @@ app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
 
+app.UseMiddleware<LogRequestsMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
@@ -125,8 +129,6 @@ app.MapHub<MessagesHub>("/api/messages");
 
 app.Use(async (context, next) => {
     var url = context.Request.Path;
-    var method = context.Request.Method;
-    Console.WriteLine($"[{method}] {url}");
     if (!url.StartsWithSegments("/api") && Regex.IsMatch(url, @"^(?!.*(\.js|\.css|\.html|\.png|\.jpg|\.jpeg|\.ico)).*$"))
     {
         context.Request.Path = "/index.html";
