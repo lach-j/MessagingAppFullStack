@@ -15,10 +15,12 @@ public class PermissionService : IPermissionService
     private readonly TimeSpan _cacheExpiration = new(0, 0, 30);
 
     private readonly ILogger<PermissionService> _logger;
+    private readonly EfCoreContext _db;
 
-    public PermissionService(ILogger<PermissionService> logger)
+    public PermissionService(ILogger<PermissionService> logger, EfCoreContext db)
     {
         _logger = logger;
+        _db = db;
     }
 
     public async Task<bool> UserHasPermissionAsync(long userId, PermissionType permission)
@@ -33,11 +35,9 @@ public class PermissionService : IPermissionService
             else
                 return cacheState.HasPermission;
         }
-
-        await using var db = new EfCoreContext();
-
+        
         var permissions = await
-            db.Permissions.Include(p => p.Roles)
+            _db.Permissions.Include(p => p.Roles)
                 .ThenInclude(r => r.Users)
                 .Where(p => p.Roles.Any(r => r.Users.Any(u => u.Id == userId)))
                 .Distinct()
@@ -67,10 +67,8 @@ public class PermissionService : IPermissionService
 
     public async Task<ICollection<Permission>> GetAllUserPermissionsAsync(long userId)
     {
-        await using var db = new EfCoreContext();
-
         var permissions = await
-            db.Permissions.Include(p => p.Roles)
+            _db.Permissions.Include(p => p.Roles)
                 .ThenInclude(r => r.Users)
                 .Where(p => p.Roles.Any(r => r.Users.Any(u => u.Id == userId)))
                 .Distinct()
@@ -81,10 +79,9 @@ public class PermissionService : IPermissionService
 
     public async Task<Role?> AssignPermissionToRoleAsync(long permissionId, long roleId)
     {
-        await using var db = new EfCoreContext();
 
-        var permission = await db.Permissions.FirstOrDefaultAsync(p => p.Id == permissionId);
-        var role = await db.Role.FirstOrDefaultAsync(r => r.Id == roleId);
+        var permission = await _db.Permissions.FirstOrDefaultAsync(p => p.Id == permissionId);
+        var role = await _db.Role.FirstOrDefaultAsync(r => r.Id == roleId);
 
         if (permission == null)
             throw new EntityNotFoundException<Permission>(permissionId);
@@ -95,28 +92,24 @@ public class PermissionService : IPermissionService
             return role;
         
         role.Permissions.Add(permission);
-        await db.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         return role;
     }
 
     public async Task<ICollection<Permission>> GetAllPermissionsAsync()
     {
-        await using var db = new EfCoreContext();
-
-        return await db.Permissions.ToListAsync();
+        return await _db.Permissions.ToListAsync();
     }
 
     public async Task<Permission> CreatePermissionAsync(Permission permission)
     {
-        await using var db = new EfCoreContext();
-
-        var existingPerm = await db.Permissions.FirstOrDefaultAsync(p => p.Name == permission.Name);
+        var existingPerm = await _db.Permissions.FirstOrDefaultAsync(p => p.Name == permission.Name);
         if (existingPerm is not null)
             return existingPerm;
             
 
-        var perm = await db.Permissions.AddAsync(permission);
-        await db.SaveChangesAsync();
+        var perm = await _db.Permissions.AddAsync(permission);
+        await _db.SaveChangesAsync();
 
 
         return perm.Entity;

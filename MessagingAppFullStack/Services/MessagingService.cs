@@ -10,14 +10,15 @@ namespace MessagingAppFullStack.Services;
 
 public class MessagingService : IMessagingService
 {
-    private readonly EfCoreContext _db = new();
+    private readonly EfCoreContext _db;
     private readonly IHubContext<MessagesHub, IMessagesHub> _hub;
     private readonly IUserProvider _userProvider;
 
-    public MessagingService(IHubContext<MessagesHub, IMessagesHub> hub, IUserProvider userProvider)
+    public MessagingService(IHubContext<MessagesHub, IMessagesHub> hub, IUserProvider userProvider, EfCoreContext db)
     {
         _hub = hub;
         _userProvider = userProvider;
+        _db = db;
     }
 
     public async Task<IEnumerable<Message>> GetMessagesInGroup(long messageGroupId)

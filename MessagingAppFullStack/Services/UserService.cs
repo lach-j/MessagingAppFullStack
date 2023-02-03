@@ -7,8 +7,13 @@ namespace MessagingAppFullStack.Services;
 public class UserService : IUserService
 {
 
-    private readonly EfCoreContext _db = new();
-    
+    private readonly EfCoreContext _db;
+
+    public UserService(EfCoreContext db)
+    {
+        _db = db;
+    }
+
     public async Task<User?> GetUserByIdAsync(long id)
     {
         var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == id);

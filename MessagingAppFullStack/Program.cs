@@ -60,10 +60,14 @@ builder.Services.AddSignalR();
 
 builder.Services.AddControllers();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+var settings = new AppSettings();
+builder.Configuration.GetSection(nameof(AppSettings)).Bind(settings);
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
 
+var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? settings.Database.ConnectionString;
+builder.Services.AddDbContext<EfCoreContext>(options => options.UseSqlServer(connection));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddSingleton<IPermissionService, PermissionService>();
