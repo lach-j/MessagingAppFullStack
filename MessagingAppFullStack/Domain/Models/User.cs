@@ -11,13 +11,12 @@ public class User
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
-
-
     public string Username { get; set; }
 
     [JsonIgnore]
     public string Password { get; set; }
 
     public virtual ICollection<Role> Roles { get; set; }
+    [JsonIgnore]
     public ICollection<MessageGroup> MessageGroups { get; set; }
 }

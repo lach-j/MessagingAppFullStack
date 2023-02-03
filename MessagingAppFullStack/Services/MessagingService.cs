@@ -32,6 +32,15 @@ public class MessagingService : IMessagingService
         return group.Messages;
     }
 
+    public async Task<IEnumerable<MessageGroup>> GetMessageGroups()
+    {
+        var currentUser = await _userProvider.GetCurrentUserAsync();
+
+        var userGroups = _db.MessageGroups.Include(mg => mg.ActiveUsers).Where(mg => mg.ActiveUsers.Any(u => u == currentUser));
+
+        return await userGroups.ToListAsync();
+    }
+
     public async Task<Message> CreateMessage(long messageGroupId, string content)
     {
         var messageGroup = _db.MessageGroups.FirstOrDefault(mg => mg.Id == messageGroupId);

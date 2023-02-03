@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { BehaviorSubject, first, map, of } from 'rxjs';
+import { BehaviorSubject, filter, first, map, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagingService {
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) {
+    this.apiService
+      .get<{ id: number; title: number; users: any }>('/Messaging')
+      .subscribe((groups) => {
+        console.log(groups.data);
+      });
+  }
 
   public readonly messageGroups: {
     [groupId: number]: BehaviorSubject<Message[]>;
@@ -28,7 +34,7 @@ export class MessagingService {
     this.apiService
       .get<Message[]>(`/messaging/${groupId}`)
       .pipe(
-        first((messages) => !!messages.data),
+        filter((messages) => !!messages.data && !messages.error),
         map((x) => x.data as Message[])
       )
       .subscribe((messages) =>
@@ -40,7 +46,7 @@ export class MessagingService {
     this.apiService
       .post<Message>(`/messaging/${messageGroupId}`, of(message))
       .pipe(
-        first((res) => !!res.data),
+        filter((res) => !!res.data && !res.error),
         map((res) => res.data as Message)
       )
       .subscribe((newMessage) => {

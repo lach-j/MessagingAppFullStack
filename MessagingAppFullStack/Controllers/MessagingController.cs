@@ -7,6 +7,8 @@ namespace MessagingAppFullStack.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
+
 public class MessagingController : ControllerBase
 {
 
@@ -18,8 +20,15 @@ public class MessagingController : ControllerBase
     }
 
     [HttpGet]
+    public async Task<IEnumerable<MessageGroup>> GetGroups()
+    {
+        return await _messagingService.GetMessageGroups();
+    }
+
+
+    [HttpGet]
     [Route("{groupId}")]
-    public async Task<IEnumerable<Message>> Get([FromRoute] long groupId)
+    public async Task<IEnumerable<Message>> GetGroupMessage([FromRoute] long groupId)
     {
         Console.WriteLine(groupId);
         return await _messagingService.GetMessagesInGroup(groupId);
@@ -27,8 +36,7 @@ public class MessagingController : ControllerBase
 
     [HttpPost]
     [Route("{groupId}")]
-    [Authorize]
-    public async Task<Message> Post([FromBody] MessageReq content, [FromRoute] long groupId)
+    public async Task<Message> PostGroupMessage([FromBody] MessageReq content, [FromRoute] long groupId)
     {
         return await _messagingService.CreateMessage(groupId, content.Content);
     }
