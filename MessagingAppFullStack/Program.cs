@@ -1,12 +1,21 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using MessagingAppFullStack.Configuration;
+using MessagingAppFullStack.Domain.Context;
+using MessagingAppFullStack.Exceptions;
 using MessagingAppFullStack.Middleware;
 using MessagingAppFullStack.Services;
 using MessagingAppFullStack.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    WebRootPath = "wwwroot/angular-client-app"
+});
 
 builder.Services.AddAuthentication(
         x =>
@@ -68,18 +77,20 @@ builder.Services.AddHttpContextAccessor();
 
 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? settings.Database.ConnectionString;
 builder.Services.AddDbContext<EfCoreContext>(options => options.UseSqlServer(connection));
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
-builder.Services.AddSingleton<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserProvider, UserProvider>();
 
+
+
 var app = builder.Build();
+
 app.UseCors("signalR");
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 else
@@ -88,7 +99,6 @@ else
     app.UseSwaggerUI();
 }
 
-// TODO: restrict to domain
 app.UseCors(
     x =>
     {
@@ -97,8 +107,6 @@ app.UseCors(
         x.AllowAnyHeader();
     });
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
@@ -108,8 +116,20 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 app.MapControllers();
-app.MapHub<MessagesHub>("/messages");
-app.MapFallbackToFile("index.html");
+app.MapHub<MessagesHub>("/api/messages");
 
+
+app.Use(async (context, next) => {
+    var url = context.Request.Path;
+    Console.WriteLine($"Getting {url}");
+    if (!url.StartsWithSegments("/api") && Regex.IsMatch(url, @"^(?!.*(\.js|\.css|\.html|\.png|\.jpg|\.jpeg|\.ico)).*$"))
+    {
+        context.Request.Path = "/index.html";
+    }
+    await next();
+});
+
+app.UseStaticFiles();
+app.UseDefaultFiles();
 
 app.Run();
