@@ -1,5 +1,4 @@
-﻿using MessagingAppFullStack.Configuration;
-using MessagingAppFullStack.Domain.Models;
+﻿using MessagingAppFullStack.Domain.Models;
 using MessagingAppFullStack.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

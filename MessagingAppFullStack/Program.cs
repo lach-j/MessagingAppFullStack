@@ -125,7 +125,8 @@ app.MapHub<MessagesHub>("/api/messages");
 
 app.Use(async (context, next) => {
     var url = context.Request.Path;
-    Console.WriteLine($"Getting {url}");
+    var method = context.Request.Method;
+    Console.WriteLine($"[{method}] {url}");
     if (!url.StartsWithSegments("/api") && Regex.IsMatch(url, @"^(?!.*(\.js|\.css|\.html|\.png|\.jpg|\.jpeg|\.ico)).*$"))
     {
         context.Request.Path = "/index.html";
@@ -135,5 +136,13 @@ app.Use(async (context, next) => {
 
 app.UseStaticFiles();
 app.UseDefaultFiles();
+
+using var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope();
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<EfCoreContext>();
+    
+    if (context.Database.GetPendingMigrations().Any())
+        context.Database.Migrate();
+}
 
 app.Run();
