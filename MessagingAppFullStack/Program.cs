@@ -83,6 +83,10 @@ builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserProvider, UserProvider>();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<EntityNotFoundFilter>();
+});
 
 
 var app = builder.Build();
