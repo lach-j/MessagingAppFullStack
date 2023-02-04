@@ -10,21 +10,23 @@ import { MessagesComponent } from './messages/messages.component';
 import { DatePipe } from './pipes/date.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  NbThemeModule,
-  NbLayoutModule,
-  NbInputModule,
-  NbIconModule,
-  NbFormFieldModule,
   NbButtonModule,
+  NbFormFieldModule,
+  NbIconModule,
+  NbInputModule,
+  NbLayoutModule,
   NbSpinnerModule,
+  NbThemeModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { PasswordFieldComponent } from './components/password-field.component';
+import { RegisterPageComponent } from './register-page/register-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginPageComponent,
+    RegisterPageComponent,
     MessagesComponent,
     DatePipe,
     PasswordFieldComponent,

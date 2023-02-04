@@ -29,29 +29,34 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class PasswordFieldComponent implements ControlValueAccessor {
-  constructor() {}
-  onChange: any = () => {};
-  onTouch: any = () => {};
   val = '';
+  showPassword = false;
+
+  constructor() {}
+
   set value(val: string) {
     this.val = val;
     this.onChange(val);
     this.onTouch(val);
   }
 
+  onChange: any = () => {};
+
+  onTouch: any = () => {};
+
   writeValue(value: any) {
     if (!value) return;
 
     this.value = value;
   }
+
   registerOnChange(fn: any) {
     this.onChange = fn;
   }
+
   registerOnTouched(fn: any) {
     this.onTouch = fn;
   }
-
-  showPassword = false;
 
   getInputType() {
     if (this.showPassword) {

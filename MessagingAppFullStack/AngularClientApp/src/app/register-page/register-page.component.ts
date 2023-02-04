@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
 import { ApiService, Response } from '../services/api.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-register-page',
   template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" class="form">
-    <input fullWidth type="text" nbInput ngModel name="username" />
+    <input fullWidth type="text" nbInput ngModel name="email" />
     <password-field name="password" ngModel></password-field>
+    <password-field name="confirmPassword" ngModel></password-field>
     <div *ngIf="{ response: response$ | async } as obs">
       <div *ngIf="obs.response?.error?.error as errors" class="error-text">
         <ul>
@@ -21,49 +22,45 @@ import { NgForm } from '@angular/forms';
         type="submit"
         [disabled]="!f.dirty"
       >
-        Login
+        Register
       </button>
     </div>
   </form>`,
-  styleUrls: ['./login-page.component.scss'],
+  styleUrls: ['./register-page.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
+export class RegisterPageComponent implements OnInit {
   public requestBody = new BehaviorSubject<{
-    username?: string;
+    email?: string;
     password?: string;
+    confirmPassword?: string;
   }>({});
 
-  public response$?: Observable<Response<{ token: string }>>;
+  public response$?: Observable<Response<any>>;
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit() {
-    const redirectUrl = this.route.snapshot.queryParams['redirect'];
-
     this.response$ = this.apiService
-      .post<{ token: string }>(
-        '/Authentication/token',
+      .post<any>(
+        '/User',
         this.requestBody.pipe(
-          filter((body) => !!body?.username && !!body?.password)
+          filter((body) => !!body?.email && !!body?.password)
         )
       )
       .pipe(
         tap((response) => {
-          if (response?.data?.token) this.router.navigateByUrl(redirectUrl);
+          if (response?.data) this.router.navigate(['login']);
         })
       );
   }
 
   public onSubmit(f: NgForm) {
-    const { username, password } = f.value;
+    const { email, password, confirmPassword } = f.value;
 
     this.requestBody.next({
-      username,
+      email,
       password,
+      confirmPassword,
     });
   }
 }

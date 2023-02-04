@@ -3,7 +3,7 @@ import { MessagingService } from '../services/messaging.service';
 
 @Component({
   selector: 'app-messages',
-  template: `<div *ngIf="messages$ | async as messages; else loading">
+  template: ` <div *ngIf="messages$ | async as messages; else loading">
       <div *ngFor="let message of messages">
         {{ message.id }} - {{ message.content }} :
         {{ message.timestamp | date }}
@@ -15,9 +15,9 @@ import { MessagingService } from '../services/messaging.service';
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit {
-  constructor(public messageService: MessagingService) {}
-
   public messages$ = this.messageService.messages$(1);
+
+  constructor(public messageService: MessagingService) {}
 
   ngOnInit(): void {
     setTimeout(() => {

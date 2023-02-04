@@ -6,6 +6,10 @@ import { BehaviorSubject, filter, first, map, of } from 'rxjs';
   providedIn: 'root',
 })
 export class MessagingService {
+  public readonly messageGroups: {
+    [groupId: number]: BehaviorSubject<Message[]>;
+  } = {};
+
   constructor(private apiService: ApiService) {
     this.apiService
       .get<{ id: number; title: number; users: any }>('/Messaging')
@@ -14,32 +18,9 @@ export class MessagingService {
       });
   }
 
-  public readonly messageGroups: {
-    [groupId: number]: BehaviorSubject<Message[]>;
-  } = {};
-
   public messages$(groupId: number) {
     this.loadInitialMessages(groupId);
     return this.getOrCreateMessages(groupId);
-  }
-
-  private getOrCreateMessages(groupId: number) {
-    if (!this.messageGroups?.[groupId])
-      this.messageGroups[groupId] = new BehaviorSubject<Message[]>([]);
-
-    return this.messageGroups[groupId];
-  }
-
-  private loadInitialMessages(groupId: number) {
-    this.apiService
-      .get<Message[]>(`/messaging/${groupId}`)
-      .pipe(
-        filter((messages) => !!messages.data && !messages.error),
-        map((x) => x.data as Message[])
-      )
-      .subscribe((messages) =>
-        this.getOrCreateMessages(groupId).next(messages)
-      );
   }
 
   public createMessage(messageGroupId: number, message: Message) {
@@ -59,6 +40,25 @@ export class MessagingService {
             ]);
           });
       });
+  }
+
+  private getOrCreateMessages(groupId: number) {
+    if (!this.messageGroups?.[groupId])
+      this.messageGroups[groupId] = new BehaviorSubject<Message[]>([]);
+
+    return this.messageGroups[groupId];
+  }
+
+  private loadInitialMessages(groupId: number) {
+    this.apiService
+      .get<Message[]>(`/messaging/${groupId}`)
+      .pipe(
+        filter((messages) => !!messages.data && !messages.error),
+        map((x) => x.data as Message[])
+      )
+      .subscribe((messages) =>
+        this.getOrCreateMessages(groupId).next(messages)
+      );
   }
 }
 

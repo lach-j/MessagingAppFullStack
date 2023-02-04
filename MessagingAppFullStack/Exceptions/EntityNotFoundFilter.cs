@@ -9,7 +9,7 @@ public class EntityNotFoundFilter : ExceptionFilterAttribute
     {
         if (context.Exception is not IEntityNotFound) return;
         
-        var error = new { error = context.Exception.Message };
+        var error = new { Errors = new [] {context.Exception.Message} };
         context.Result = new JsonResult(error)
         {
             StatusCode = 404

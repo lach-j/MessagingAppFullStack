@@ -37,7 +37,7 @@ public class AuthenticationController : ControllerBase
 
         if (user is null || !(tokenRequest.Username == user.Username &&
                               BCrypt.Net.BCrypt.Verify(tokenRequest.Password, user.Password)))
-            return Unauthorized(new {Message = "Invalid Credentials"});
+            return Unauthorized(new []{"Invalid Credentials"});
 
         var permissions = await _permissionService.GetAllUserPermissionsAsync(user);
 
