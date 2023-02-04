@@ -22,7 +22,7 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.Username == email);
+        var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == email);
         return user;
     }
 
@@ -34,7 +34,7 @@ public class UserService : IUserService
 
     public async Task<User?> CreateUserAsync(User user)
     {
-        var existing = await _db.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+        var existing = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
         if (existing is not null)
             return null;

@@ -1,10 +1,16 @@
-﻿import { Component, forwardRef } from '@angular/core';
+﻿import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'password-field',
   template: ` <nb-form-field>
-    <input fullWidth [(ngModel)]="value" [type]="getInputType()" nbInput />
+    <input
+      fullWidth
+      [(ngModel)]="value"
+      [type]="getInputType()"
+      [placeholder]="placeholder"
+      nbInput
+    />
     <button
       type="button"
       nbSuffix
@@ -29,6 +35,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class PasswordFieldComponent implements ControlValueAccessor {
+  @Input() public placeholder?: string = '';
   val = '';
   showPassword = false;
 

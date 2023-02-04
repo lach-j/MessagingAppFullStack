@@ -60,7 +60,7 @@ namespace MessagingAppFullStack.Domain.Context
                     v => (PermissionType)Enum.Parse(typeof(PermissionType), v));
             
             modelBuilder.Entity<User>()
-                .HasIndex(p => new {p.Username})
+                .HasIndex(p => new {p.Email})
                 .IsUnique();
 
             modelBuilder.Entity<Role>()

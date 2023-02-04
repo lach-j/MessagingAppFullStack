@@ -7,9 +7,24 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-register-page',
   template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" class="form">
-    <input fullWidth type="text" nbInput ngModel name="email" />
-    <password-field name="password" ngModel></password-field>
-    <password-field name="confirmPassword" ngModel></password-field>
+    <input
+      placeholder="Email"
+      fullWidth
+      type="text"
+      nbInput
+      ngModel
+      name="email"
+    />
+    <password-field
+      placeholder="Password"
+      name="password"
+      ngModel
+    ></password-field>
+    <password-field
+      placeholder="Confirm Password"
+      name="confirmPassword"
+      ngModel
+    ></password-field>
     <div *ngIf="{ response: response$ | async } as obs">
       <div *ngIf="obs.response?.error?.error as errors" class="error-text">
         <ul>

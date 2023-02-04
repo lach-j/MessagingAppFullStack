@@ -33,9 +33,9 @@ public class AuthenticationController : ControllerBase
     [Route("token")]
     public async Task<ActionResult> GetToken([FromBody] TokenRequest tokenRequest)
     {
-        var user = await _userService.GetUserByEmailAsync(tokenRequest.Username);
+        var user = await _userService.GetUserByEmailAsync(tokenRequest.Email);
 
-        if (user is null || !(tokenRequest.Username == user.Username &&
+        if (user is null || !(tokenRequest.Email == user.Email &&
                               BCrypt.Net.BCrypt.Verify(tokenRequest.Password, user.Password)))
             return Unauthorized(new []{"Invalid Credentials"});
 
@@ -49,7 +49,7 @@ public class AuthenticationController : ControllerBase
             new Claim(
                 "permissions", JsonSerializer.Serialize(permissions.Select(p => p.Name)),
                 typeof(ICollection<Permission>).ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Username)
+            new Claim(JwtRegisteredClaimNames.Email, user.Email)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Jwt.Key));

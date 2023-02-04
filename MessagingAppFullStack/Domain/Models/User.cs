@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessagingAppFullStack.Domain.Models;
 
-[Index(nameof(Username), IsUnique = true)]
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
-    public string Username { get; set; }
+    public string Email { get; set; }
 
     [JsonIgnore]
     public string Password { get; set; }

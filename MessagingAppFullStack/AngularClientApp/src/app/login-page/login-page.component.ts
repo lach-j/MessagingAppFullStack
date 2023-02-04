@@ -7,8 +7,19 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-login-page',
   template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" class="form">
-    <input fullWidth type="text" nbInput ngModel name="username" />
-    <password-field name="password" ngModel></password-field>
+    <input
+      placeholder="Email"
+      fullWidth
+      type="text"
+      nbInput
+      ngModel
+      name="email"
+    />
+    <password-field
+      placeholder="Password"
+      name="password"
+      ngModel
+    ></password-field>
     <div *ngIf="{ response: response$ | async } as obs">
       <div *ngIf="obs.response?.error?.error as errors" class="error-text">
         <ul>
@@ -29,7 +40,7 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginPageComponent implements OnInit {
   public requestBody = new BehaviorSubject<{
-    username?: string;
+    email?: string;
     password?: string;
   }>({});
 
@@ -48,7 +59,7 @@ export class LoginPageComponent implements OnInit {
       .post<{ token: string }>(
         '/Authentication/token',
         this.requestBody.pipe(
-          filter((body) => !!body?.username && !!body?.password)
+          filter((body) => !!body?.email && !!body?.password)
         )
       )
       .pipe(
@@ -59,10 +70,10 @@ export class LoginPageComponent implements OnInit {
   }
 
   public onSubmit(f: NgForm) {
-    const { username, password } = f.value;
+    const { email, password } = f.value;
 
     this.requestBody.next({
-      username,
+      email,
       password,
     });
   }

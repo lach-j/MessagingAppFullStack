@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     {
         var user = new User
         {
-            Username = userRequest.Email,
+            Email = userRequest.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(userRequest.Password)
         };
 
