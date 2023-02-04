@@ -17,6 +17,18 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       }
     },
+    "MessagingAppFullStack_Linux": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7013;http://localhost:5226",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
+        "DB_CONNECTION": "Server=localhost,1433;Database=MessagingAppFullStack;Trusted_Connection=True;MultipleActiveResultSets=true;User Id=SA;Password=Password123;Integrated Security=false",
+        "ASPNETCORE_Kestrel__Certificates__Default__Password": "TestPass123",
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "/home/lach-j/.aspnet/https/aspnetapp.pfx"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
