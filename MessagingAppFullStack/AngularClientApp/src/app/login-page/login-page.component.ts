@@ -7,14 +7,7 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-login-page',
   template: ` <form #f="ngForm" (ngSubmit)="onSubmit(f)" class="form">
-    <input
-      placeholder="Email"
-      fullWidth
-      type="text"
-      nbInput
-      ngModel
-      name="email"
-    />
+    <app-input-text placeholder="Email" type="text" ngModel name="email" />
     <password-field
       placeholder="Password"
       name="password"
@@ -26,14 +19,7 @@ import { NgForm } from '@angular/forms';
           <li *ngFor="let error of errors">{{ error }}</li>
         </ul>
       </div>
-      <button
-        [nbSpinner]="obs.response?.loading ?? false"
-        nbButton
-        type="submit"
-        [disabled]="!f.dirty"
-      >
-        Login
-      </button>
+      <app-button type="submit" [disabled]="!f.dirty">Login</app-button>
     </div>
   </form>`,
   styleUrls: ['./login-page.component.scss'],

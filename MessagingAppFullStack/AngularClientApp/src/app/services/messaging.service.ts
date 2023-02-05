@@ -10,6 +10,8 @@ export class MessagingService {
     [groupId: number]: BehaviorSubject<MessageGroup | undefined>;
   } = {};
 
+  private readonly _messageGroups$ = new BehaviorSubject<MessageGroup[]>([]);
+
   constructor(private apiService: ApiService) {
     this.apiService
       .get<{ id: number; title: number; users: any }>('/Messaging')
@@ -21,6 +23,19 @@ export class MessagingService {
   public messageGroup$(groupId: number) {
     this.loadInitialMessages(groupId);
     return this.getOrCreateMessages(groupId);
+  }
+
+  public get messageGroups$() {
+    this.apiService
+      .get<MessageGroup[]>('/messaging')
+      .pipe(
+        filter((res) => !!res.data),
+        map((res) => res.data as MessageGroup[])
+      )
+      .subscribe((groups) => {
+        this._messageGroups$.next(groups);
+      });
+    return this._messageGroups$;
   }
 
   public createMessage(messageGroupId: number, message: Message) {

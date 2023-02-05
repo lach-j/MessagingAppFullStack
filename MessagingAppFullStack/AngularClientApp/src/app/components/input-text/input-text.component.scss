@@ -1,0 +1,30 @@
+@import "src/styles";
+
+div {
+  padding: 0.2rem;
+  display: flex;
+  border: 1px solid gray;
+  border-radius: 0.3rem;
+
+  transition-duration: 300ms;
+  * {
+    transition-duration: 300ms;
+  }
+
+  input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    outline: none;
+    border: none;
+    flex-grow: 1;
+  }
+
+  &:focus-within {
+    background-color: $focus-background-color;
+
+    input {
+      background-color: $focus-background-color;
+    }
+  }
+}

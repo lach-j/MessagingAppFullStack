@@ -33,7 +33,7 @@ public class UserController : ControllerBase
 
         var createdUser = await _userService.CreateUserAsync(user);
         if (createdUser is null)
-            return Conflict(new { Message = $"{nameof(User)} with email '{userRequest.Email}' already exists." });
+            return Conflict(new [] { $"{nameof(User)} with email '{userRequest.Email}' already exists." });
         return Ok(createdUser);
     }
 

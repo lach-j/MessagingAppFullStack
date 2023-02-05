@@ -1,0 +1,17 @@
+button {
+  padding: 0.8rem 1rem 0.8rem 1rem;
+
+  background-color: #3c6cc7;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  font-size: 0.9rem;
+
+  &[disabled] {
+    background-color: #8492ad;
+  }
+
+  &:active {
+    background-color: #335daf;
+  }
+}

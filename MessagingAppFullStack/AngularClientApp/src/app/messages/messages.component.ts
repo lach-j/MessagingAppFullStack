@@ -3,7 +3,12 @@ import { MessagingService } from '../services/messaging.service';
 
 @Component({
   selector: 'app-messages',
-  template: ` <div *ngIf="messageGroup$ | async as messageGroup; else loading">
+  template: ` <div *ngIf="messageGroups$ | async as groups">
+      <span *ngFor="let group of groups">{{
+        group.groupName.toUpperCase()
+      }}</span>
+    </div>
+    <div *ngIf="messageGroup$ | async as messageGroup; else loading">
       <h1>{{ messageGroup.groupName }}</h1>
       <div *ngFor="let message of messageGroup.messages">
         {{ message.id }} - {{ message.content }} :
@@ -17,6 +22,7 @@ import { MessagingService } from '../services/messaging.service';
 })
 export class MessagesComponent implements OnInit {
   public messageGroup$ = this.messageService.messageGroup$(1);
+  public messageGroups$ = this.messageService.messageGroups$;
 
   constructor(public messageService: MessagingService) {}
 

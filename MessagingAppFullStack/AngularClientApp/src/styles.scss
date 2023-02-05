@@ -1,10 +1,5 @@
-@use 'themes' as *;
-
-@use '@nebular/theme/styles/globals' as *;
-
-@include nb-install() {
-  @include nb-theme-global();
-};
 * {
   font-family: sans-serif;
 }
+
+$focus-background-color: rgb(243, 246, 255);

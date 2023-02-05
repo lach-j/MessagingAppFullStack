@@ -3,29 +3,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'password-field',
-  template: ` <nb-form-field>
+  template: `<div class="wrapper">
     <input
-      fullWidth
       [(ngModel)]="value"
       [type]="getInputType()"
       [placeholder]="placeholder"
-      nbInput
     />
-    <button
-      type="button"
-      nbSuffix
-      nbButton
-      ghost
+    <app-icon-button
+      class="toggle-show-button"
+      [icon]="showPassword ? 'bootstrapEyeSlash' : 'bootstrapEye'"
       (click)="toggleShowPassword()"
-    >
-      <nb-icon
-        [icon]="showPassword ? 'eye-off-outline' : 'eye-outline'"
-        pack="eva"
-        [attr.aria-label]="showPassword ? 'hide password' : 'show password'"
-      >
-      </nb-icon>
-    </button>
-  </nb-form-field>`,
+    ></app-icon-button>
+  </div>`,
+  styleUrls: ['./password-field.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
