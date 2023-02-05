@@ -41,6 +41,17 @@ public class MessagingService : IMessagingService
         return await userGroups.ToListAsync();
     }
 
+    public async Task<MessageGroup> GetMessageGroup(long groupId)
+    {
+        // TODO: Check permissions
+        var group = await _db.MessageGroups.Include(mg => mg.ActiveUsers).SingleOrDefaultAsync(mg => mg.Id == groupId);
+
+        if (group is null)
+            throw new EntityNotFoundException<MessageGroup>(groupId);
+
+        return group;
+    }
+
     public async Task<Message> CreateMessage(long messageGroupId, string content)
     {
         var messageGroup = _db.MessageGroups.FirstOrDefault(mg => mg.Id == messageGroupId);

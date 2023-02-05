@@ -21,7 +21,9 @@ public class LogRequestsMiddleware
         var method = context.Request.Method;
         var user = context.User.Claims.FirstOrDefault(claim => claim.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
         var body = await context.Request.GetRawBodyAsync();
-        _logger.LogInformation($"[{method}{(user is not null ? $"({user})" : "")}] {url}{(body.IsNullOrEmpty() ? string.Empty : $" | {body}")}");
+        _logger.LogInformation(@$"[{method}] {url}
+{(user is not null ? $"    - USER: {user}" : "")}
+{(body.IsNullOrEmpty() ? string.Empty : $"    - BODY: {body}")}");
         
         await _next(context);
     }

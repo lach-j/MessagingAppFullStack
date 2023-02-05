@@ -24,10 +24,17 @@ public class MessagingController : ControllerBase
     {
         return await _messagingService.GetMessageGroups();
     }
+    
+    [HttpGet]
+    [Route("{groupId}")]
+    public async Task<MessageGroup> GetGroup([FromRoute] long groupId)
+    {
+        return await _messagingService.GetMessageGroup(groupId);
+    }
 
 
     [HttpGet]
-    [Route("{groupId}")]
+    [Route("{groupId}/messages")]
     public async Task<IEnumerable<Message>> GetGroupMessage([FromRoute] long groupId)
     {
         return await _messagingService.GetMessagesInGroup(groupId);

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { BehaviorSubject, filter, first, map, of } from 'rxjs';
+import { BehaviorSubject, filter, first, map, of, zip } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagingService {
-  public readonly messageGroups: {
-    [groupId: number]: BehaviorSubject<Message[]>;
+  private readonly messageGroups: {
+    [groupId: number]: BehaviorSubject<MessageGroup | undefined>;
   } = {};
 
   constructor(private apiService: ApiService) {
@@ -18,7 +18,7 @@ export class MessagingService {
       });
   }
 
-  public messages$(groupId: number) {
+  public messageGroup$(groupId: number) {
     this.loadInitialMessages(groupId);
     return this.getOrCreateMessages(groupId);
   }
@@ -33,32 +33,42 @@ export class MessagingService {
       .subscribe((newMessage) => {
         this.getOrCreateMessages(messageGroupId)
           .pipe(first())
-          .subscribe((messages) => {
-            this.getOrCreateMessages(messageGroupId).next([
-              ...messages,
-              newMessage,
-            ]);
+          .subscribe((group) => {
+            if (group)
+              this.getOrCreateMessages(messageGroupId).next({
+                ...group,
+                messages: [...group.messages, newMessage],
+              });
           });
       });
   }
 
   private getOrCreateMessages(groupId: number) {
     if (!this.messageGroups?.[groupId])
-      this.messageGroups[groupId] = new BehaviorSubject<Message[]>([]);
+      this.messageGroups[groupId] = new BehaviorSubject<
+        MessageGroup | undefined
+      >(undefined);
 
     return this.messageGroups[groupId];
   }
 
   private loadInitialMessages(groupId: number) {
-    this.apiService
-      .get<Message[]>(`/messaging/${groupId}`)
+    const messageGroup$ = this.apiService
+      .get<MessageGroup>(`/Messaging/${groupId}`)
+      .pipe(
+        filter((messages) => !!messages.data && !messages.error),
+        map((x) => x.data as MessageGroup)
+      );
+    const messages$ = this.apiService
+      .get<Message[]>(`/messaging/${groupId}/messages`)
       .pipe(
         filter((messages) => !!messages.data && !messages.error),
         map((x) => x.data as Message[])
-      )
-      .subscribe((messages) =>
-        this.getOrCreateMessages(groupId).next(messages)
       );
+
+    zip([messageGroup$, messages$]).subscribe(([messageGroup, messages]) =>
+      this.getOrCreateMessages(groupId).next({ ...messageGroup, messages })
+    );
   }
 }
 
@@ -66,4 +76,16 @@ export interface Message {
   id?: number;
   content: string;
   timestamp?: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+}
+
+export interface MessageGroup {
+  id?: number;
+  activeUsers: User[];
+  messages: Message[];
+  groupName: string;
 }
