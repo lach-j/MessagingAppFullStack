@@ -71,6 +71,6 @@ public class AuthenticationController : ControllerBase
                 Secure = true
             });
 
-        return Ok(new {Token = tokenString});
+        return Ok(new {Token = tokenString, User = user });
     }
 }

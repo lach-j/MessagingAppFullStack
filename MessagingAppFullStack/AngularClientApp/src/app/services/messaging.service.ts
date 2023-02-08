@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, filter, first, map, of, zip } from 'rxjs';
+import { User } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -38,9 +39,9 @@ export class MessagingService {
     return this._messageGroups$;
   }
 
-  public createMessage(messageGroupId: number, message: Message) {
+  public createMessage(messageGroupId: number, message: string) {
     this.apiService
-      .post<Message>(`/messaging/${messageGroupId}`, of(message))
+      .post<Message>(`/messaging/${messageGroupId}`, of({ content: message }))
       .pipe(
         filter((res) => !!res.data && !res.error),
         map((res) => res.data as Message)
@@ -91,11 +92,7 @@ export interface Message {
   id?: number;
   content: string;
   timestamp?: string;
-}
-
-export interface User {
-  id: number;
-  email: string;
+  user: User;
 }
 
 export interface MessageGroup {

@@ -10,6 +10,7 @@ import {
 } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,11 @@ export class ApiService {
   // TODO: dynamically infer the url or use SPA proxy
   private readonly baseUrl = '/api';
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   public post<T>(
     endpoint: string,
@@ -47,10 +52,12 @@ export class ApiService {
         if (error.status === 400) {
           error.error = Object.values(error.error.errors).flat();
         }
-        if (error.status === 401 && !this.router.url.startsWith('/login'))
+        if (error.status === 401 && !this.router.url.startsWith('/login')) {
+          this.userService.clearUserData();
           this.router.navigate(['/login'], {
             queryParams: { redirect: this.router.url },
           });
+        }
         return of({ error, loading: false });
       }),
       startWith({ loading: true })

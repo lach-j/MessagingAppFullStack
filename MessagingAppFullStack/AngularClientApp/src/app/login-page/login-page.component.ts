@@ -3,6 +3,7 @@ import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
 import { ApiService, Response } from '../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { User, UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-login-page',
@@ -35,14 +36,15 @@ export class LoginPageComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
     const redirectUrl = this.route.snapshot.queryParams['redirect'];
 
     this.response$ = this.apiService
-      .post<{ token: string }>(
+      .post<{ token: string; user: User }>(
         '/Authentication/token',
         this.requestBody.pipe(
           filter((body) => !!body?.email && !!body?.password)
@@ -50,7 +52,10 @@ export class LoginPageComponent implements OnInit {
       )
       .pipe(
         tap((response) => {
-          if (response?.data?.token) this.router.navigateByUrl(redirectUrl);
+          if (response?.data) {
+            this.userService.storeUserData(response.data.user);
+            this.router.navigateByUrl(redirectUrl);
+          }
         })
       );
   }
