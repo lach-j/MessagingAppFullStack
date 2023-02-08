@@ -3,3 +3,31 @@
 }
 
 $focus-background-color: rgb(243, 246, 255);
+
+
+$themes: (
+  'ghost': (
+    base: transparent,
+    disabled: transparent,
+    hover: #f5f5f5,
+    text: black
+  ),
+  'red': (
+    base: #e72e2e,
+    disabled: #c55e5e,
+    hover: #f83434,
+    active: #c71212,
+    text: white
+  ),
+  'primary': (
+    base: #3c6cc7,
+    disabled: #8492ad,
+    hover: #5288e8,
+    active: #335daf,
+    text: white
+  )
+);
+
+@function get-theme($name) {
+  @return map-get($themes, $name);
+}

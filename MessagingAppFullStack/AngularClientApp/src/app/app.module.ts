@@ -13,9 +13,15 @@ import { PasswordFieldComponent } from './components/password-field/password-fie
 import { RegisterPageComponent } from './register-page/register-page.component';
 import { IconButtonComponent } from './components/icon-button/icon-button.component';
 import { NgIconComponent, NgIconsModule } from '@ng-icons/core';
-import { bootstrapEye, bootstrapEyeSlash } from '@ng-icons/bootstrap-icons';
+import {
+  bootstrapEye,
+  bootstrapEyeSlash,
+  bootstrapSend,
+} from '@ng-icons/bootstrap-icons';
 import { InputTextComponent } from './components/input-text/input-text.component';
 import { ButtonComponent } from './components/button/button.component';
+import { SendBarComponent } from './components/messaging/send-bar/send-bar.component';
+import { MessageComponent } from './components/messaging/message/message.component';
 
 @NgModule({
   declarations: [
@@ -28,9 +34,11 @@ import { ButtonComponent } from './components/button/button.component';
     IconButtonComponent,
     InputTextComponent,
     ButtonComponent,
+    SendBarComponent,
+    MessageComponent,
   ],
   imports: [
-    NgIconsModule.withIcons({ bootstrapEye, bootstrapEyeSlash }),
+    NgIconsModule.withIcons({ bootstrapEye, bootstrapEyeSlash, bootstrapSend }),
     FormsModule,
     BrowserModule,
     AppRoutingModule,

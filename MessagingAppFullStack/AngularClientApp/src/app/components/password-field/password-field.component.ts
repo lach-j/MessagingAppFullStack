@@ -11,6 +11,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     />
     <app-icon-button
       class="toggle-show-button"
+      size="l"
       [icon]="showPassword ? 'bootstrapEyeSlash' : 'bootstrapEye'"
       (click)="toggleShowPassword()"
     ></app-icon-button>

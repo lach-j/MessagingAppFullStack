@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessagingService } from '../services/messaging.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-messages',
@@ -10,10 +11,16 @@ import { MessagingService } from '../services/messaging.service';
     </div>
     <div *ngIf="messageGroup$ | async as messageGroup; else loading">
       <h1>{{ messageGroup.groupName }}</h1>
-      <div *ngFor="let message of messageGroup.messages">
-        {{ message.id }} - {{ message.content }} :
-        {{ message.timestamp | date }}
-      </div>
+      <app-message
+        [currentUser]="userService.user$ | async"
+        *ngFor="let message of messageGroup.messages"
+        [message]="message"
+      >
+      </app-message>
+      <app-send-bar
+        class="send-button"
+        (onSend)="addMessage($event)"
+      ></app-send-bar>
     </div>
     <ng-template #loading>
       <span>Loading...</span>
@@ -24,11 +31,14 @@ export class MessagesComponent implements OnInit {
   public messageGroup$ = this.messageService.messageGroup$(1);
   public messageGroups$ = this.messageService.messageGroups$;
 
-  constructor(public messageService: MessagingService) {}
+  constructor(
+    public messageService: MessagingService,
+    public userService: UserService
+  ) {}
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.messageService.createMessage(1, { content: 'test' });
-    }, 2000);
+  public addMessage(message: string) {
+    this.messageService.createMessage(1, message);
   }
+
+  ngOnInit(): void {}
 }

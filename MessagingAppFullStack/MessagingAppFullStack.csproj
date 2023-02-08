@@ -37,6 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="AngularClientApp\src\app\components\messaging" />
       <Folder Include="Migrations" />
     </ItemGroup>
 

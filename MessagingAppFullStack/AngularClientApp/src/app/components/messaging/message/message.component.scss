@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+
+  &.own-message {
+    justify-content: end;
+    .bubble {
+      align-items: end;
+      .content {
+        background-color: #3c6cc7;
+      }
+    }
+  }
+
+  .bubble {
+    display: flex;
+    flex-direction: column;
+
+    .content {
+      background-color: #9e1cbb;
+      width: min-content;
+      padding: 0.5rem 0.9rem 0.5rem 0.9rem;
+      color: white;
+      border-radius: 2rem;
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+    }
+  }
+}

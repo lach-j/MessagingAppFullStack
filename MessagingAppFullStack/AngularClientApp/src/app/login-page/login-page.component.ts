@@ -20,7 +20,7 @@ import { User, UserService } from '../services/user.service';
           <li *ngFor="let error of errors">{{ error }}</li>
         </ul>
       </div>
-      <app-button type="submit" [disabled]="!f.dirty">Login</app-button>
+      <app-button type="submit" [isPrimary]="true" [disabled]="!f.dirty">Login</app-button>
     </div>
   </form>`,
   styleUrls: ['./login-page.component.scss'],

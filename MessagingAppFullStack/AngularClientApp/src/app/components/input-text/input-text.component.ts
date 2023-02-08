@@ -3,7 +3,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input-text',
-  template: `<div>
+  template: ` <div>
     <input [(ngModel)]="value" [placeholder]="placeholder" />
   </div>`,
   styleUrls: ['./input-text.component.scss'],
@@ -27,12 +27,16 @@ export class InputTextComponent {
     this.onTouch(val);
   }
 
+  get value() {
+    return this.val;
+  }
+
   onChange: any = () => {};
 
   onTouch: any = () => {};
 
   writeValue(value: any) {
-    if (!value) return;
+    if (!value && value !== '') return;
 
     this.value = value;
   }

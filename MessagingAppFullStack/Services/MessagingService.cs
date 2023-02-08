@@ -23,7 +23,7 @@ public class MessagingService : IMessagingService
 
     public async Task<IEnumerable<Message>> GetMessagesInGroup(long messageGroupId)
     {
-        var group = await _db.MessageGroups.Include(mg => mg.Messages)
+        var group = await _db.MessageGroups.Include(mg => mg.Messages).ThenInclude(m => m.User)
             .FirstOrDefaultAsync(mg => mg.Id == messageGroupId);
 
         if (group == null)

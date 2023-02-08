@@ -5,13 +5,14 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { CustomTheme } from '../../../themes';
 
 @Component({
   selector: 'app-button',
   template: `
     <button
-      [class.primary]="isPrimary"
       (click)="onButtonClick($event)"
+      [class]="themeName"
       [type]="type"
       [disabled]="disabled"
     >
@@ -26,6 +27,12 @@ export class ButtonComponent {
   @Input() public type: string = 'button';
   @Output() public click: EventEmitter<MouseEvent> =
     new EventEmitter<MouseEvent>();
+
+  @Input() public theme: CustomTheme = 'primary';
+
+  public get themeName() {
+    return `theme-${this.theme}`;
+  }
 
   @HostListener('click')
   onClick(event: MouseEvent) {}
